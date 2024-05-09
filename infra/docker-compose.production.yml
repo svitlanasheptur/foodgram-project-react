@@ -9,17 +9,15 @@ volumes:
 services:
   db:
     image: postgres:13.10
-    env_file: .env
+    env_file: ./.env
     ports:
       - 5432:5432
     volumes:
       - pg_data:/var/lib/postgresql/data/
   
   backend:
-    build: ../backend/
-    env_file: .env
-    environment:
-      - GUNICORN_TIMEOUT=120
+    image: svitlanasheptur/foodgram_backend
+    env_file: ./.env
     volumes:
       - static:/app/backend_static/
       - media:/app/media/
@@ -27,16 +25,14 @@ services:
       - db
 
   frontend:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
+    image: svitlanasheptur/foodgram_frontend
     volumes:
       - static_frontend:/app/result_build/
     depends_on:
       - db
 
   nginx:
-    image: nginx:1.19.3    
+    image: nginx:1.19.3
     ports:
       - 9000:80
     volumes:
