@@ -21,7 +21,7 @@ class IngredientInline(admin.StackedInline):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        'name',
+        "name",
         "color",
         "slug",
     )
