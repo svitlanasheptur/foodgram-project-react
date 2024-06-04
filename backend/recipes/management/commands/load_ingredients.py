@@ -1,9 +1,8 @@
 # isort:skip
-from django.core.management.base import BaseCommand
-from django.db import transaction
-
 import json
 
+from django.core.management.base import BaseCommand
+from django.db import transaction
 from recipes.models import Ingredient
 
 

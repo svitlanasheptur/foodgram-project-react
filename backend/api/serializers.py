@@ -6,8 +6,6 @@ from rest_framework.relations import SlugRelatedField
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import CustomUser, Subscription
 
-from .serializers import AbridgedRecipeSerializer
-
 
 class CustomUserSerializer(serializers.ModelSerializer):
     """Сериализатор для просмотра аккаунтов пользователя."""
