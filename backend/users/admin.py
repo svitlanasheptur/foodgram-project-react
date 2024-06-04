@@ -8,24 +8,24 @@ from users.models import CustomUser, Subscription
 @admin.register(CustomUser)
 class UserAdmin(UserAdmin):
     list_display = (
-        "username",
-        "email",
-        "first_name",
-        "last_name",
+        'username',
+        'email',
+        'first_name',
+        'last_name',
     )
     list_filter = (
-        "username",
-        "email",
+        'username',
+        'email',
     )
 
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
     list_display = (
-        "user",
-        "author",
+        'user',
+        'author',
     )
-    search_fields = ("user",)
+    search_fields = ('user',)
 
 
 admin.site.unregister(Group)

@@ -21,13 +21,13 @@ class IngredientInline(admin.StackedInline):
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
-        "color",
-        "slug",
+        'name',
+        'color',
+        'slug',
     )
     search_fields = (
-        "name",
-        "slug",
+        'name',
+        'slug',
     )
 
 
@@ -35,29 +35,29 @@ class TagAdmin(admin.ModelAdmin):
 class IngredientAdmin(ImportExportModelAdmin):
     resource_classes = [IngredientResource]
     list_display = (
-        "name",
-        "measurement_unit",
+        'name',
+        'measurement_unit',
     )
-    search_fields = ("name",)
-    list_filter = ("name",)
+    search_fields = ('name',)
+    list_filter = ('name',)
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     list_display = (
-        "name",
-        "author",
-        "favorite_count",
+        'name',
+        'author',
+        'favorite_count',
     )
     search_fields = (
-        "name",
-        "author__username",
+        'name',
+        'author__username',
     )
     list_filter = (
-        "name",
-        "author",
+        'name',
+        'author',
     )
-    exclude = ("tags",)
+    exclude = ('tags',)
     inlines = (
         IngredientInline,
         TagInline,
@@ -65,32 +65,32 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.annotate(favorite_count=Count("favorite"))
+        queryset = queryset.annotate(favorite_count=Count('favorite'))
         return queryset
 
     def favorite_count(self, obj):
         return obj.favorite_count
 
-    favorite_count.admin_order_field = "favorite_count"
-    favorite_count.short_description = "В избранном"
+    favorite_count.admin_order_field = 'favorite_count'
+    favorite_count.short_description = 'В избранном'
 
 
 @admin.register(ShoppingCart)
 class ShoppingCartAdmin(admin.ModelAdmin):
     list_display = (
-        "user",
-        "recipe",
+        'user',
+        'recipe',
     )
-    search_fields = ("user",)
+    search_fields = ('user',)
 
 
 @admin.register(Favorite)
 class FavotiteAdmin(admin.ModelAdmin):
     list_display = (
-        "user",
-        "recipe",
+        'user',
+        'recipe',
     )
-    search_fields = ("user",)
+    search_fields = ('user',)
 
 
-admin.site.empty_value_display = "Отсутствует"
+admin.site.empty_value_display = 'Отсутствует'
