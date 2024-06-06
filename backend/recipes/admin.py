@@ -68,11 +68,9 @@ class RecipeAdmin(admin.ModelAdmin):
         queryset = queryset.annotate(favorite_count=Count('favorite'))
         return queryset
 
+    @admin.display(description='В избранном')
     def favorite_count(self, obj):
         return obj.favorite_count
-
-    favorite_count.admin_order_field = 'favorite_count'
-    favorite_count.short_description = 'В избранном'
 
 
 @admin.register(ShoppingCart)
@@ -81,7 +79,7 @@ class ShoppingCartAdmin(admin.ModelAdmin):
         'user',
         'recipe',
     )
-    search_fields = ('user',)
+    search_fields = ('user__username',)
 
 
 @admin.register(Favorite)
@@ -90,7 +88,7 @@ class FavotiteAdmin(admin.ModelAdmin):
         'user',
         'recipe',
     )
-    search_fields = ('user',)
+    search_fields = ('user__username',)
 
 
 admin.site.empty_value_display = 'Отсутствует'

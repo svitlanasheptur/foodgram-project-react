@@ -1,9 +1,9 @@
 import django_filters
 from django.db.models import Sum
-from django.http import HttpResponse
+from django.http import FileResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
-from rest_framework import status, viewsets
+from rest_framework import permissions, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
@@ -20,8 +20,8 @@ from recipes.models import Favorite, Ingredient, Recipe, ShoppingCart, Tag
 from users.models import Subscription
 
 
-class CustomUserViewSet(UserViewSet):
-    """Вьюсет для работы с пользователями."""
+class UserSubscriptionViewSet(UserViewSet):
+    """Вьюсет для работы с пользователями и подписками."""
 
     pagination_class = LimitPageNumberPagination
     permission_classes = [AllowAny]
@@ -29,7 +29,7 @@ class CustomUserViewSet(UserViewSet):
     def get_permissions(self):
         if self.action == 'me':
             return [IsAuthenticated()]
-        return super(CustomUserViewSet, self).get_permissions()
+        return super(UserSubscriptionViewSet, self).get_permissions()
 
     @action(
         detail=True,
@@ -97,9 +97,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
 
     def get_serializer_class(self):
-        if self.action in ['list', 'retrieve']:
+        if self.request.method in permissions.SAFE_METHODS:
             return RecipeReadSerializer
         return RecipeCreateAndUpdateSerializer
+
+    def get_permissions(self):
+        if self.action in [
+            'favorite', 'shopping_cart', 'download_shopping_cart'
+        ]:
+            return [IsAuthenticated()]
+        return super().get_permissions()
 
     def add_item(self, serializer_type, request, pk):
         serializer = serializer_type(
@@ -158,10 +165,16 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def download_shopping_cart(self, request):
-        shopping_list = []
+        ingredients = self.get_shopping_cart_ingredients(request.user)
+        content = self.generate_shopping_list_content(ingredients)
+        response = FileResponse(content, content_type='text/plain')
+        response['Content-Disposition'] = \
+            'attachment; filename="shopping_list.txt"'
+        return response
 
-        ingredients = (
-            ShoppingCart.objects.filter(user=request.user)
+    def get_shopping_cart_ingredients(self, user):
+        return (
+            ShoppingCart.objects.filter(user=user)
             .values('recipe')
             .values_list(
                 'recipe__ingredients__name',
@@ -170,20 +183,14 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(total_amount=Sum('recipe__ingredientes__amount'))
         )
 
-        shopping_list.append('Список покупок\n')
-
+    def generate_shopping_list_content(self, ingredients):
+        shopping_list = ['Список покупок\n']
         for i, ingredient in enumerate(ingredients, start=1):
             shopping_list.append(
                 f'{i}. {ingredient[0].capitalize()} '
                 f'({ingredient[1]}) - {ingredient[2]}\n'
             )
-
-        response = HttpResponse(shopping_list, content_type='text/plain')
-        response['Content-Disposition'] = (
-            'attachment; filename="shopping_list.txt"'
-        )
-
-        return response
+        return ''.join(shopping_list)
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
-from users.models import CustomUser, Subscription
+from users.models import ExtendedUser, Subscription
 
 
-@admin.register(CustomUser)
+@admin.register(ExtendedUser)
 class UserAdmin(UserAdmin):
     list_display = (
         'username',
@@ -25,7 +25,7 @@ class SubscriptionAdmin(admin.ModelAdmin):
         'user',
         'author',
     )
-    search_fields = ('user',)
+    search_fields = ('user__username',)
 
 
 admin.site.unregister(Group)

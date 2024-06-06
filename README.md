@@ -75,7 +75,7 @@ python3 manage.py runserver
 - POSTGRES_PASSWORD=пароль
 
 - DEBUG=False
-- ALLOWED_HOSTS=имя_вашего_сайта,158.160.0.95,127.0.0.1,localhost
+- ALLOWED_HOSTS=имя_вашего_сайта
 
 Запустите проект с помощью Docker Compose:
 
@@ -135,7 +135,9 @@ http://localhost:9000/admin/recipes/ingredient/import/
 ```
 
 Обновите конфиг Nginx и перезагрузите его.
-Откройте в браузере страницу проекта https://имя_вашего_сайта/
+
+Страница проекта: https://lovefood.zapto.org/
+Документация API: https://lovefood.zapto.org/api/
 
 ### Автор ###
 Проект разработан Светланой Шептур
