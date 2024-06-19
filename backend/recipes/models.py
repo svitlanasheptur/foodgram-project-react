@@ -7,7 +7,11 @@ from django.db import models
 from core.constraints import (MAX_AMOUNT, MAX_COLOR_LENGTH, MAX_COOKING_TIME,
                               MAX_NAME_LENGTH, MIN_AMOUNT, MIN_COOKING_TIME)
 from core.models import BaseNameModel, BaseUserModel
-from users.models import ExtendedUser
+from users.models import CustomUser
+
+
+def generate_random_color():
+    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
 
 
 class Tag(models.Model):
@@ -19,7 +23,7 @@ class Tag(models.Model):
     color = ColorField(
         verbose_name='Цвет в HEX',
         max_length=MAX_COLOR_LENGTH,
-        default=lambda: f'#{random.randint(0, 0xFFFFFF):06x}',
+        default=generate_random_color,
         unique=True,
     )
     slug = models.SlugField(
@@ -60,7 +64,7 @@ class Ingredient(BaseNameModel):
 
 class Recipe(BaseNameModel):
     author = models.ForeignKey(
-        ExtendedUser,
+        CustomUser,
         verbose_name='Автор',
         on_delete=models.CASCADE,
         related_name='recipes',

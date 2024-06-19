@@ -2,10 +2,10 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.models import Group
 
-from users.models import ExtendedUser, Subscription
+from users.models import CustomUser, Subscription
 
 
-@admin.register(ExtendedUser)
+@admin.register(CustomUser)
 class UserAdmin(UserAdmin):
     list_display = (
         'username',

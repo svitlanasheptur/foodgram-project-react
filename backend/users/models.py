@@ -7,7 +7,7 @@ from core.constraints import (MAX_FIRST_NAME_LENGTH, MAX_LAST_NAME_LENGTH,
                               MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH)
 
 
-class ExtendedUser(AbstractUser):
+class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
@@ -45,13 +45,13 @@ class ExtendedUser(AbstractUser):
 
 class Subscription(models.Model):
     user = models.ForeignKey(
-        ExtendedUser,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='subscriptions',
         verbose_name='Пользователь',
     )
     author = models.ForeignKey(
-        ExtendedUser,
+        CustomUser,
         on_delete=models.CASCADE,
         related_name='subscribers',
         verbose_name='Автор',

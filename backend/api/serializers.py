@@ -5,7 +5,7 @@ from rest_framework.validators import UniqueTogetherValidator
 
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
                             ShoppingCart, Tag)
-from users.models import ExtendedUser, Subscription
+from users.models import CustomUser, Subscription
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -14,7 +14,7 @@ class UserSerializer(serializers.ModelSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        model = ExtendedUser
+        model = CustomUser
         fields = (
             'email',
             'id',
@@ -46,7 +46,7 @@ class SubscribeSerializer(UserSerializer):
     recipes_count = serializers.ReadOnlyField(source='recipes.count')
 
     class Meta:
-        model = ExtendedUser
+        model = CustomUser
         fields = UserSerializer.Meta.fields + (
             'recipes',
             'recipes_count',
@@ -83,7 +83,7 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         default=serializers.CurrentUserDefault(),
     )
     author = SlugRelatedField(
-        slug_field='username', queryset=ExtendedUser.objects.all()
+        slug_field='username', queryset=CustomUser.objects.all()
     )
 
     class Meta:

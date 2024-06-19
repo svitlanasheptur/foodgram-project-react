@@ -1,7 +1,7 @@
 from django.db import models
 
 from core.constraints import MAX_NAME_LENGTH
-from users.models import ExtendedUser
+from users.models import CustomUser
 
 
 class BaseNameModel(models.Model):
@@ -23,7 +23,7 @@ class BaseUserModel(models.Model):
     """Базовая модель с общим полем 'пользователь'."""
 
     user = models.ForeignKey(
-        ExtendedUser,
+        CustomUser,
         on_delete=models.CASCADE,
         verbose_name='Пользователь',
     )
