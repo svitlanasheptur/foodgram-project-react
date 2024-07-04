@@ -1,6 +1,6 @@
 import django_filters
 from django.db.models import Sum
-from django.http import FileResponse
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from djoser.views import UserViewSet
 from rest_framework import permissions, status, viewsets
@@ -165,32 +165,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
         permission_classes=[IsAuthenticated],
     )
     def download_shopping_cart(self, request):
-        ingredients = self.get_shopping_cart_ingredients(request.user)
-        content = self.generate_shopping_list_content(ingredients)
-        response = FileResponse(content, content_type='text/plain')
-        response['Content-Disposition'] = \
-            'attachment; filename="shopping_list.txt"'
-        return response
+        shopping_list = []
 
-    def get_shopping_cart_ingredients(self, user):
-        return (
-            ShoppingCart.objects.filter(user=user)
+        ingredients = (
+            ShoppingCart.objects.filter(user=request.user)
             .values('recipe')
             .values_list(
                 'recipe__ingredients__name',
                 'recipe__ingredients__measurement_unit',
             )
-            .annotate(total_amount=Sum('recipe__recipe_ingredients__amount'))
+            .annotate(total_amount=Sum('recipe__ingredientes__amount'))
         )
 
-    def generate_shopping_list_content(self, ingredients):
-        shopping_list = ['Список покупок\n']
+        shopping_list.append('Список покупок\n')
+
         for i, ingredient in enumerate(ingredients, start=1):
             shopping_list.append(
                 f'{i}. {ingredient[0].capitalize()} '
                 f'({ingredient[1]}) - {ingredient[2]}\n'
             )
-        return ''.join(shopping_list)
+
+        response = HttpResponse(shopping_list, content_type='text/plain')
+        response['Content-Disposition'] = (
+            'attachment; filename="shopping_list.txt"'
+        )
+
+        return response
 
 
 class IngredientViewSet(viewsets.ReadOnlyModelViewSet):

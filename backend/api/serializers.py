@@ -166,7 +166,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
     author = UserSerializer(read_only=True)
     tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientRecipeSerializer(
-        many=True, read_only=True, source='recipe_ingredients'
+        many=True, read_only=True, source='ingredientes'
     )
     is_favorited = serializers.SerializerMethodField()
     is_in_shopping_cart = serializers.SerializerMethodField()
