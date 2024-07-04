@@ -180,7 +180,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 'recipe__ingredients__name',
                 'recipe__ingredients__measurement_unit',
             )
-            .annotate(total_amount=Sum('recipe__ingredient_recipes__amount'))
+            .annotate(total_amount=Sum('recipe__recipe_ingredients__amount'))
         )
 
     def generate_shopping_list_content(self, ingredients):
