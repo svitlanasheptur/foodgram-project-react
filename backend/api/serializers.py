@@ -57,12 +57,8 @@ class SubscribeSerializer(UserSerializer):
         request = self.context['request']
         limit = request.GET.get('recipes_limit')
         queryset = obj.recipes.all()
-        if limit:
-            try:
-                limit = int(limit)
-            except ValueError:
-                pass
-            queryset = queryset[:limit]
+        if limit and limit.isdigit():
+            queryset = queryset[:int(limit)]
         return AbridgedRecipeSerializer(
             queryset,
             many=True,
@@ -82,8 +78,8 @@ class SubscribeCreateSerializer(serializers.ModelSerializer):
         slug_field='username',
         default=serializers.CurrentUserDefault(),
     )
-    author = SlugRelatedField(
-        slug_field='username', queryset=CustomUser.objects.all()
+    author = serializers.PrimaryKeyRelatedField(
+        queryset=CustomUser.objects.all()
     )
 
     class Meta:
@@ -228,7 +224,7 @@ class RecipeReadSerializer(serializers.ModelSerializer):
         return bool(
             request
             and request.user.is_authenticated
-            and obj.shoppingcarts.filter(user=request.user).exists(),
+            and obj.shopping_carts.filter(user=request.user).exists(),
         )
 
 
@@ -287,7 +283,7 @@ class RecipeCreateAndUpdateSerializer(serializers.ModelSerializer):
         IngredientRecipe.objects.bulk_create(
             IngredientRecipe(
                 recipe=recipe,
-                ingredient_id=ingredient_data.get('id'),
+                ingredient=ingredient_data['id'],
                 amount=ingredient_data['amount'],
             )
             for ingredient_data in ingredients_data

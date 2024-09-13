@@ -157,18 +157,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def delete_shopping_cart(self, request, pk=None):
         return self.delete_item(ShoppingCart, request, pk)
 
-    @action(
-        detail=False,
-        methods=['GET'],
-        url_path='download_shopping_cart',
-        url_name='download_shopping_cart',
-        permission_classes=[IsAuthenticated],
-    )
-    def download_shopping_cart(self, request):
-        shopping_list = []
-
-        ingredients = (
-            ShoppingCart.objects.filter(user=request.user)
+    def get_shopping_list_data(self, user):
+        return (
+            ShoppingCart.objects.filter(user=user)
             .values('recipe')
             .values_list(
                 'recipe__ingredients__name',
@@ -177,15 +168,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
             .annotate(total_amount=Sum('recipe__ingredientes__amount'))
         )
 
-        shopping_list.append('Список покупок\n')
-
+    def format_shopping_list(self, ingredients):
+        shopping_list = ['Список покупок\n']
         for i, ingredient in enumerate(ingredients, start=1):
             shopping_list.append(
                 f'{i}. {ingredient[0].capitalize()} '
                 f'({ingredient[1]}) - {ingredient[2]}\n'
             )
+        return ''.join(shopping_list)
 
-        response = HttpResponse(shopping_list, content_type='text/plain')
+    @action(
+        detail=False,
+        methods=['GET'],
+        url_path='download_shopping_cart',
+        url_name='download_shopping_cart',
+        permission_classes=[IsAuthenticated],
+    )
+    def download_shopping_cart(self, request):
+        ingredients = self.get_shopping_list_data(request.user)
+        shopping_list_text = self.format_shopping_list(ingredients)
+
+        response = HttpResponse(shopping_list_text, content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping_list.txt"'
         )

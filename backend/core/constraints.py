@@ -9,9 +9,6 @@ MAX_NAME_LENGTH = 200
 # максимальная длина поля цвета
 MAX_COLOR_LENGTH = 7
 
-# максимальная длина для текста
-MAX_TEXT_LENGTH = 1000
-
 # минимальное время для готовки и для количества ингредиентов
 MIN_COOKING_TIME = MIN_AMOUNT = 1
 
@@ -19,4 +16,7 @@ MIN_COOKING_TIME = MIN_AMOUNT = 1
 MAX_COOKING_TIME = MAX_AMOUNT = 32000
 
 # количество элементов, возвращаемых на страницу в постраничном ответе
-PAGE_SIZE = 5
+PAGE_SIZE = 6
+
+# максимальная длина строки для отображения объекта
+MAX_STR_LENGTH = 30

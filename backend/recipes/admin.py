@@ -65,7 +65,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         queryset = super().get_queryset(request)
-        queryset = queryset.annotate(favorite_count=Count('favorite'))
+        queryset = queryset.annotate(favorite_count=Count('favorites'))
         return queryset
 
     @admin.display(description='В избранном')
@@ -83,7 +83,7 @@ class ShoppingCartAdmin(admin.ModelAdmin):
 
 
 @admin.register(Favorite)
-class FavotiteAdmin(admin.ModelAdmin):
+class FavoriteAdmin(admin.ModelAdmin):
     list_display = (
         'user',
         'recipe',

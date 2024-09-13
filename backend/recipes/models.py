@@ -1,17 +1,15 @@
-import random
-
 from colorfield.fields import ColorField
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
-from core.constraints import (MAX_AMOUNT, MAX_COLOR_LENGTH, MAX_COOKING_TIME,
-                              MAX_NAME_LENGTH, MIN_AMOUNT, MIN_COOKING_TIME)
+from core.constraints import (
+    MAX_AMOUNT, MAX_COLOR_LENGTH, MAX_COOKING_TIME,
+    MAX_NAME_LENGTH, MAX_STR_LENGTH, MIN_AMOUNT,
+    MIN_COOKING_TIME
+)
 from core.models import BaseNameModel, BaseUserModel
 from users.models import CustomUser
-
-
-def generate_random_color():
-    return "#{:06x}".format(random.randint(0, 0xFFFFFF))
+from .utils import generate_random_color
 
 
 class Tag(models.Model):
@@ -38,7 +36,7 @@ class Tag(models.Model):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MAX_STR_LENGTH]
 
 
 class Ingredient(BaseNameModel):
@@ -59,7 +57,7 @@ class Ingredient(BaseNameModel):
         ]
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MAX_STR_LENGTH]
 
 
 class Recipe(BaseNameModel):
@@ -107,7 +105,7 @@ class Recipe(BaseNameModel):
         ordering = ('name',)
 
     def __str__(self):
-        return self.name[:30]
+        return self.name[:MAX_STR_LENGTH]
 
 
 class IngredientRecipe(models.Model):
@@ -151,7 +149,6 @@ class BaseUserRecipeModel(BaseUserModel):
         Recipe,
         on_delete=models.CASCADE,
         verbose_name='Рецепт',
-        related_name='%(class)ss_set',
     )
 
     class Meta:
@@ -173,6 +170,7 @@ class Favorite(BaseUserRecipeModel):
     class Meta(BaseUserRecipeModel.Meta):
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранные'
+        default_related_name = 'favorites'
 
 
 class ShoppingCart(BaseUserRecipeModel):
@@ -180,3 +178,4 @@ class ShoppingCart(BaseUserRecipeModel):
     class Meta(BaseUserRecipeModel.Meta):
         verbose_name = 'Рецепт в корзине'
         verbose_name_plural = 'Рецепты в корзине'
+        default_related_name = 'shopping_carts'

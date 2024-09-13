@@ -6,6 +6,8 @@ from django.db.models import F, Q
 from core.constraints import (MAX_FIRST_NAME_LENGTH, MAX_LAST_NAME_LENGTH,
                               MAX_PASSWORD_LENGTH, MAX_USERNAME_LENGTH)
 
+from .validators import validate_username_not_me
+
 
 class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
@@ -15,7 +17,7 @@ class CustomUser(AbstractUser):
         verbose_name='Логин',
         max_length=MAX_USERNAME_LENGTH,
         unique=True,
-        validators=[UnicodeUsernameValidator()],
+        validators=[UnicodeUsernameValidator(), validate_username_not_me],
     )
     password = models.CharField(
         verbose_name='Пароль',
