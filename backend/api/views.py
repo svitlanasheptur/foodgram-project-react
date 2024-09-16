@@ -41,7 +41,7 @@ class UserSubscriptionViewSet(UserViewSet):
         user = request.user
 
         serializer = SubscribeCreateSerializer(
-            data={'user': user, 'author': author},
+            data={'user': user.username, 'author': author.id},
             context={'request': request},
         )
         serializer.is_valid(raise_exception=True)

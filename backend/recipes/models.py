@@ -1,13 +1,13 @@
 from colorfield.fields import ColorField
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
 from core.constraints import (MAX_AMOUNT, MAX_COLOR_LENGTH, MAX_COOKING_TIME,
                               MAX_NAME_LENGTH, MAX_STR_LENGTH, MIN_AMOUNT,
                               MIN_COOKING_TIME)
 from core.models import BaseNameModel, BaseUserModel
-from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from recipes.utils import generate_random_color
 from users.models import CustomUser
-
-from .utils import generate_random_color
 
 
 class Tag(models.Model):
