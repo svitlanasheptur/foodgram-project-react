@@ -136,7 +136,7 @@ http://localhost:9000/admin/recipes/ingredient/import/
 
 Обновите конфиг Nginx и перезагрузите его.
 
-Страница проекта: https://lovefood.zapto.org/
+Страница проекта: [LoveFood](https://lovefood.zapto.org/)
 Документация API: http://localhost:9000/api/
 
 ### Автор ###

@@ -20,3 +20,5 @@ PAGE_SIZE = 6
 
 # максимальная длина строки для отображения объекта
 MAX_STR_LENGTH = 30
+
+FORBIDDEN_USERNAME = 'me'
